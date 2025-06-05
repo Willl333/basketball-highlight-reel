@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 const generateRenderPlan = require('./renderPlan');
 
 const app = express();
@@ -17,7 +18,21 @@ app.post('/api/renderPlan', (req, res) => {
   res.json({ plan });
 });
 
-app.listen(PORT, () =>
-  console.log(`Server ready on http://localhost:${PORT}`)
-);
+// simple payment endpoint stub
+app.post('/api/pay', (req, res) => {
+  const { amount, currency } = req.body || {};
+  if (!amount || !currency) {
+    return res.status(400).json({ error: 'Missing payment details' });
+  }
+  const paymentId = crypto.randomBytes(8).toString('hex');
+  res.json({ paymentId, status: 'received', amount, currency });
+});
+
+if (require.main === module) {
+  app.listen(PORT, () =>
+    console.log(`Server ready on http://localhost:${PORT}`)
+  );
+}
+
+module.exports = app;
 
