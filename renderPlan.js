@@ -1,11 +1,29 @@
 function generateRenderPlan(opts = {}) {
+  const {
+    focusMode = 'all',
+    structureType = 'montage',
+    duration = 60,
+    highlightCount = 5,
+    resolution = '1080p',
+  } = opts;
+
+  const clipLength = Math.floor(duration / highlightCount);
+  const clips = Array.from({ length: highlightCount }, (_, i) => ({
+    start: i * clipLength,
+    end: i * clipLength + clipLength,
+    label:
+      structureType === 'countdown'
+        ? `highlight-${highlightCount - i}`
+        : `highlight-${i + 1}`,
+  }));
+
   return {
-    ...opts,
-    clips: [
-      { start: 12, end: 20, label: 'dunk' },
-      { start: 45, end: 52, label: 'three-pointer' },
-      { start: 87, end: 94, label: 'fast break' }
-    ]
+    focusMode,
+    structureType,
+    duration,
+    highlightCount,
+    resolution,
+    clips,
   };
 }
 module.exports = generateRenderPlan;
